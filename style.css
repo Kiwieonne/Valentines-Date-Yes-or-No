@@ -59,6 +59,46 @@ body.doom {
   color: #fff;
 }
 
+body.shake {
+  animation: screenShake 120ms linear infinite;
+}
+
+@keyframes screenShake {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10% {
+    transform: translate(-2px, 1px) rotate(-0.2deg);
+  }
+  20% {
+    transform: translate(-1px, -2px) rotate(0.2deg);
+  }
+  30% {
+    transform: translate(2px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(0.25deg);
+  }
+  50% {
+    transform: translate(-2px, -1px) rotate(-0.25deg);
+  }
+  60% {
+    transform: translate(2px, 1px) rotate(0.15deg);
+  }
+  70% {
+    transform: translate(1px, 2px) rotate(-0.1deg);
+  }
+  80% {
+    transform: translate(-1px, 1px) rotate(0.1deg);
+  }
+  90% {
+    transform: translate(2px, -2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
 .stage {
   height: 100%;
   display: grid;

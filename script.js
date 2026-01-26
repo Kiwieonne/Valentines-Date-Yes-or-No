@@ -137,6 +137,8 @@ function playNukeOverlay() {
   if (img) img.src = `./nuke.gif?t=${Date.now()}`;
 
   overlay.classList.add('show');
+  document.body.classList.add('shake');
+  setTimeout(() => document.body.classList.remove('shake'), 1300);
   setTimeout(() => overlay.classList.remove('show'), 1500);
 }
 
