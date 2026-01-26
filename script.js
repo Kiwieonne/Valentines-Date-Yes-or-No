@@ -6,6 +6,12 @@ const result = document.getElementById('result');
 let noPosition = { left: 260, top: 44 };
 let dodgeCount = 0;
 let noExploded = false;
+let yesGrow = 1;
+
+function setYesGrow(scale) {
+  yesGrow = scale;
+  yesBtn.style.setProperty('--grow', String(scale));
+}
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -115,38 +121,36 @@ function spawnPixelsAtButton() {
   setTimeout(() => layer.remove(), 2600);
 }
 
-function ensureNukeOverlay() {
-  let overlay = document.querySelector('.nuke-overlay');
-  if (overlay) return overlay;
+function playNoExplosionGif() {
+  // Play the user's GIF right on top of where the No button is.
+  const containerRect = buttons.getBoundingClientRect();
+  const noRect = noBtn.getBoundingClientRect();
+  const cx = (noRect.left - containerRect.left) + noRect.width / 2;
+  const cy = (noRect.top - containerRect.top) + noRect.height / 2;
 
-  overlay = document.createElement('div');
-  overlay.className = 'nuke-overlay';
+  const holder = document.createElement('div');
+  holder.className = 'no-explosion';
+  holder.style.left = `${cx}px`;
+  holder.style.top = `${cy}px`;
 
   const img = document.createElement('img');
   img.alt = '';
-  img.src = './nuke.gif';
-  overlay.appendChild(img);
+  // Cache-bust so it replays each time.
+  img.src = `${encodeURI('./no explosion.gif')}?t=${Date.now()}`;
+  holder.appendChild(img);
 
-  document.body.appendChild(overlay);
-  return overlay;
-}
+  buttons.appendChild(holder);
 
-function playNukeOverlay() {
-  const overlay = ensureNukeOverlay();
-  const img = overlay.querySelector('img');
-  if (img) img.src = `./nuke.gif?t=${Date.now()}`;
-
-  overlay.classList.add('show');
   document.body.classList.add('shake');
   setTimeout(() => document.body.classList.remove('shake'), 1300);
-  setTimeout(() => overlay.classList.remove('show'), 1500);
+  setTimeout(() => holder.remove(), 1600);
 }
 
 function explodeNo() {
   if (noExploded) return;
   noExploded = true;
   noBtn.classList.add('exploding');
-  playNukeOverlay();
+  playNoExplosionGif();
   spawnPixelsAtButton();
   document.body.classList.add('meltdown');
   const card = document.querySelector('.card');
@@ -165,6 +169,7 @@ function explodeNo() {
     document.body.classList.remove('meltdown');
     document.body.classList.add('finale');
     if (card) card.classList.remove('breaking');
+    setYesGrow(4);
   }, 1100);
 }
 
@@ -207,6 +212,7 @@ function dodge(pointerClientX, pointerClientY) {
 
   if (movedEnough) {
     dodgeCount += 1;
+    setYesGrow(Math.min(3.8, 1 + dodgeCount * 0.22));
     if (dodgeCount >= 13) explodeNo();
   }
 }
@@ -215,6 +221,7 @@ function dodge(pointerClientX, pointerClientY) {
 window.addEventListener('load', () => {
   const rect = getRectRelativeTo(noBtn, buttons);
   setNoPosition(rect.left, rect.top);
+  setYesGrow(1);
 });
 
 buttons.addEventListener('mousemove', (e) => {
