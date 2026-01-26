@@ -115,44 +115,36 @@ function spawnPixelsAtButton() {
   setTimeout(() => layer.remove(), 2600);
 }
 
-function runPacmanEat() {
-  const containerRect = buttons.getBoundingClientRect();
-  const noRect = noBtn.getBoundingClientRect();
+function ensureNukeOverlay() {
+  let overlay = document.querySelector('.nuke-overlay');
+  if (overlay) return overlay;
 
-  const cx = (noRect.left - containerRect.left) + noRect.width / 2;
-  const cy = (noRect.top - containerRect.top) + noRect.height / 2;
+  overlay = document.createElement('div');
+  overlay.className = 'nuke-overlay';
 
-  const size = 190;
+  const img = document.createElement('img');
+  img.alt = '';
+  img.src = './nuke.gif';
+  overlay.appendChild(img);
 
-  const pac = document.createElement('div');
-  pac.className = 'pacman';
-  pac.style.setProperty('--size', `${size}px`);
-  pac.style.setProperty('--sx', `${-520}px`);
-  pac.style.setProperty('--ex', '0px');
-  pac.style.left = `${cx - size / 2}px`;
-  pac.style.top = `${cy - size / 2}px`;
+  document.body.appendChild(overlay);
+  return overlay;
+}
 
-  const eye = document.createElement('div');
-  eye.className = 'eye';
-  pac.appendChild(eye);
+function playNukeOverlay() {
+  const overlay = ensureNukeOverlay();
+  const img = overlay.querySelector('img');
+  if (img) img.src = `./nuke.gif?t=${Date.now()}`;
 
-  buttons.appendChild(pac);
-
-  // Hide the No button right when Pac-Man reaches it.
-  setTimeout(() => {
-    noBtn.style.visibility = 'hidden';
-  }, 520);
-
-  setTimeout(() => {
-    pac.remove();
-  }, 1100);
+  overlay.classList.add('show');
+  setTimeout(() => overlay.classList.remove('show'), 1500);
 }
 
 function explodeNo() {
   if (noExploded) return;
   noExploded = true;
   noBtn.classList.add('exploding');
-  runPacmanEat();
+  playNukeOverlay();
   spawnPixelsAtButton();
   document.body.classList.add('meltdown');
   const card = document.querySelector('.card');
@@ -161,6 +153,10 @@ function explodeNo() {
   // Make it non-interactive immediately
   noBtn.disabled = true;
   noBtn.style.pointerEvents = 'none';
+
+  setTimeout(() => {
+    noBtn.style.visibility = 'hidden';
+  }, 520);
 
   // After the split animation finishes, go to the black finale + giant Yes button
   setTimeout(() => {
