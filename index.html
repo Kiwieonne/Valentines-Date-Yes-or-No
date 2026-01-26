@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valentine?</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="stage" aria-label="Valentine prompt">
+      <section class="card" role="group" aria-labelledby="prompt">
+        <div class="hearts" aria-hidden="true">
+          <span>❤</span><span>❤</span><span>❤</span>
+        </div>
+
+        <h1 id="prompt" class="title">Let’s Go Out on Valentines?</h1>
+        <p class="subtitle">(Be honest… but the No button might be shy.)</p>
+
+        <div class="buttons" id="buttons">
+          <button id="yesBtn" class="btn yes" type="button">Yes</button>
+          <button id="noBtn" class="btn no" type="button">No</button>
+        </div>
+
+        <div id="result" class="result" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
