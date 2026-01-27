@@ -3,11 +3,18 @@ const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const result = document.getElementById('result');
 const finalAudio = document.getElementById('finalAudio');
+const jumpscare = document.getElementById('jumpscare');
+const rizz = document.getElementById('rizz');
 
 let noPosition = { left: 260, top: 44 };
 let dodgeCount = 0;
 let noExploded = false;
 let yesGrow = 1;
+
+let jumpscareShown = false;
+let jumpscareActive = false;
+
+let rizzActive = false;
 
 let audioUnlocked = false;
 
@@ -15,6 +22,7 @@ function unlockAudioOnce() {
   if (!finalAudio || audioUnlocked) return;
 
   finalAudio.muted = true;
+  finalAudio.volume = 1;
   finalAudio.play()
     .then(() => {
       finalAudio.pause();
@@ -31,12 +39,51 @@ document.addEventListener('keydown', unlockAudioOnce);
 function playFinalAudio() {
   if (!finalAudio) return;
   finalAudio.muted = false;
+  finalAudio.volume = 1;
+  finalAudio.load();
   finalAudio.currentTime = 0;
   finalAudio.play().catch(() => {
     if (result && !result.textContent) {
       result.textContent = 'Tap/click once to enable sound';
     }
   });
+}
+
+function showJumpscare() {
+  if (jumpscareShown || jumpscareActive) return;
+  jumpscareShown = true;
+  jumpscareActive = true;
+
+  document.body.classList.add('jumpscare-active');
+  if (jumpscare) {
+    jumpscare.setAttribute('aria-hidden', 'false');
+  }
+
+  setTimeout(() => {
+    document.body.classList.remove('jumpscare-active');
+    if (jumpscare) {
+      jumpscare.setAttribute('aria-hidden', 'true');
+    }
+    jumpscareActive = false;
+  }, 2000);
+}
+
+function showRizz() {
+  if (rizzActive) return;
+  rizzActive = true;
+
+  document.body.classList.add('rizz-active');
+  if (rizz) {
+    rizz.setAttribute('aria-hidden', 'false');
+  }
+
+  setTimeout(() => {
+    document.body.classList.remove('rizz-active');
+    if (rizz) {
+      rizz.setAttribute('aria-hidden', 'true');
+    }
+    rizzActive = false;
+  }, 2000);
 }
 
 function setYesGrow(scale) {
@@ -97,6 +144,9 @@ function spawnConfetti() {
 }
 
 function acceptYes() {
+  if (dodgeCount === 0) {
+    showRizz();
+  }
   unlockAudioOnce();
   playFinalAudio();
   result.textContent = 'Yay! See you Soon';
@@ -246,6 +296,7 @@ function dodge(pointerClientX, pointerClientY) {
 
   if (movedEnough) {
     dodgeCount += 1;
+      if (dodgeCount === 8) showJumpscare();
     setYesGrow(Math.min(3.8, 1 + dodgeCount * 0.22));
     if (dodgeCount >= 13) explodeNo();
   }
