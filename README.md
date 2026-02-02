@@ -58,12 +58,8 @@ For a more detailed understanding of the multiple files present in the program:
 2. Run: `python -m http.server 8000`
 3. Open browser to: `http://localhost:8000`
 
-### Deploying to GitHub Pages
-1. Go to repository Settings → Pages
-2. Set Source to "Deploy from a branch"
-3. Select branch: `main`, folder: `/ (root)`
-4. Click Save
-5. Your site will be live at: `https://[username].github.io/[repo-name]/`
+### GitHub Pages
+1. Simply click index.html
 
 ---
 
